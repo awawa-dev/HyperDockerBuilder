@@ -24,7 +24,7 @@ if [ "$?" -ne "0" ]; then
   exit 1
 fi
 
-if(CMAKE_VERSION VERSION_LESS "3.27.7")
+if (CMAKE_VERSION VERSION_LESS "3.27.7")
   echo "Disabling SBOM as CMake version is older than 3.27.7"
   build_option="-DQT_GENERATE_SBOM=OFF"
 fi
