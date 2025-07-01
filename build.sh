@@ -26,6 +26,7 @@ fi
 
 required_version="3.27.7"
 current_version=$(cmake --version | head -n1 | awk '{print $3}')
+echo "Current CMake version: $current_version"
 
 if [ "$(printf '%s\n' "$current_version" "$required_version" | sort -V | head -n1)" != "$required_version" ]; then
   echo "CMake version is older than $required_version"
