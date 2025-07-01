@@ -24,9 +24,14 @@ if [ "$?" -ne "0" ]; then
   exit 1
 fi
 
+if(CMAKE_VERSION VERSION_LESS "3.27.7")
+  echo "Disabling SBOM as CMake version is older than 3.27.7"
+  build_option="-DQT_GENERATE_SBOM=OFF"
+fi
+
 rm -r * .*
 git clone --branch v${qt_version} https://github.com/qt/qtserialport.git qtserialport
-cmake -G Ninja -DCMAKE_BUILD_TYPE=Release -DQT_GENERATE_SBOM=OFF ./qtserialport
+cmake -G Ninja -DCMAKE_BUILD_TYPE=Release ${build_option} ./qtserialport
 if [ "$?" -ne "0" ]; then
   echo "Qt serial configuration failed"
   exit 1
