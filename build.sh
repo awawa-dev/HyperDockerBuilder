@@ -29,6 +29,14 @@ if (CMAKE_VERSION VERSION_LESS "3.27.7")
   build_option="-DQT_GENERATE_SBOM=OFF"
 fi
 
+required_version="3.27.7"
+current_version=$(cmake --version | head -n1 | awk '{print $3}')
+
+if [ "$(printf '%s\n' "$current_version" "$required_version" | sort -V | head -n1)" != "$required_version" ]; then
+  echo "CMake version is older than $required_version"
+  build_option="-DQT_GENERATE_SBOM=OFF"
+fi
+
 rm -r * .*
 git clone --branch v${qt_version} https://github.com/qt/qtserialport.git qtserialport
 cmake -G Ninja -DCMAKE_BUILD_TYPE=Release ${build_option} ./qtserialport
