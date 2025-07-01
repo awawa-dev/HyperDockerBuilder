@@ -27,7 +27,7 @@ fi
 required_version="3.27.7"
 current_version=$(cmake --version | head -n1 | awk '{print $3}' | sed 's/[^0-9.].*$//')
 if [ "$(printf '%s\n' "$current_version" "$required_version" | sort -V | head -n1)" != "$required_version" ]; then
-  echo "CMake version $current_version is older than $required_version"
+  echo "CMake version $current_version is older than $required_version" >&2
   build_option="-DQT_GENERATE_SBOM=OFF"
 fi
 
