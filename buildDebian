@@ -26,6 +26,7 @@ RUN apt --assume-yes install \
     libusb-1.0-0-dev \
     libx11-dev \
     libzstd-dev \
+    lld \    
     ninja-build \
     patchelf \
     pkg-config \

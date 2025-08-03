@@ -24,6 +24,7 @@ RUN sudo pacman -S --noconfirm --needed \
     libglvnd \
     libjpeg-turbo \
     libx11 \
+    lld \    
     mariadb-libs \
     mesa \
     ninja \

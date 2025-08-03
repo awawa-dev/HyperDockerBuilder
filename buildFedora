@@ -21,6 +21,7 @@ RUN sudo dnf -y install \
     libglvnd-devel \
     libusb1-devel \
     libzstd-devel \
+    lld \    
     mesa-libEGL-devel \
     mesa-libGL-devel \
     ninja-build \
