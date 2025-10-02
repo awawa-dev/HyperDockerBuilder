@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         architecture: [ armhf, arm64, amd64]
-        distroVersion: [ bullseye, bookworm]
+        distroVersion: [ bullseye, bookworm, trixie]
         include:
           - runner: ubuntu-24.04
             architecture: amd64
@@ -61,7 +61,21 @@ jobs:
             architecture: armhf            
             distro: debian
             dockerSource: balenalib/raspberry-pi:{distroVersion}-build
-            tool: buildDebian           
+            tool: buildDebian
+
+          - runner: ubuntu-24.04-arm
+            architecture: arm64
+            distro: debian
+            distroVersion: trixie
+            dockerSource: arm64v8/debian:{distroVersion}-slim
+            tool: buildDebian
+
+          - runner: ubuntu-24.04-arm
+            architecture: armhf            
+            distro: debian
+            distroVersion: trixie
+            dockerSource: arm32v7/debian:{distroVersion}-slim
+            tool: buildDebian            
 
     steps:
       - name: Checkout
@@ -71,7 +85,7 @@ jobs:
         uses: docker/setup-qemu-action@v3.6.0
 
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@v3.4
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
