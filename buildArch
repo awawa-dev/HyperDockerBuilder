@@ -3,9 +3,9 @@ FROM ${DOCKER_SOURCE}
 
 # install the packages required by HyperHDR
 
-RUN sudo pacman -Syy
-RUN sudo pacman -Syu --noconfirm
-RUN sudo pacman -S --noconfirm --needed \
+RUN pacman -Syy
+RUN pacman -Syu --noconfirm
+RUN pacman -S --noconfirm --needed \
     alsa-lib \
     bash \
     base-devel \
@@ -40,18 +40,18 @@ RUN sudo pacman -S --noconfirm --needed \
     wget \
     xz
 
-RUN sudo sed -i "/OPTIONS/s/\sdebug/ !debug/g" /etc/makepkg.conf
-RUN sudo sed -i "/OPTIONS/s/\slto/ !lto/g" /etc/makepkg.conf
-RUN sudo cat /etc/makepkg.conf | grep OPTIONS=
+RUN sed -i "/OPTIONS/s/\sdebug/ !debug/g" /etc/makepkg.conf
+RUN sed -i "/OPTIONS/s/\slto/ !lto/g" /etc/makepkg.conf
+RUN cat /etc/makepkg.conf | grep OPTIONS=
 
 RUN mkdir -p /scripts
 COPY build.sh /scripts
 RUN chmod +x /scripts/build.sh
 RUN bash -xc "cd /scripts;./build.sh"
 
-RUN sudo sed -i '/COMPRESSZST=/d' /etc/makepkg.conf
-RUN sudo bash -c "echo 'COMPRESSZST=(zstd -c -T0 --ultra -20 -)' >> /etc/makepkg.conf"
-RUN sudo useradd --no-create-home build && usermod -L build
+RUN sed -i '/COMPRESSZST=/d' /etc/makepkg.conf
+RUN bash -c "echo 'COMPRESSZST=(zstd -c -T0 --ultra -20 -)' >> /etc/makepkg.conf"
+RUN useradd --no-create-home build && usermod -L build
 RUN mkdir -p /hyperhdr
 RUN chown build /hyperhdr
 RUN mkdir -p /.ccache

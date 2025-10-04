@@ -5,77 +5,32 @@ on:
 
 jobs:
   DevelopmentDockerBuilder:
-    name: ${{ matrix.architecture }}/${{ matrix.distro }}:${{ matrix.distroVersion }}
-    runs-on: ${{ matrix.runner }}
+    name: ${{ matrix.architecture }}/${{ matrix.distroName }}:${{ matrix.distroVersion }}
+    runs-on: ${{ startsWith(matrix.architecture, 'arm') && 'ubuntu-24.04-arm' || 'ubuntu-24.04' }}
     permissions:
       packages: write
 
     strategy:
       matrix:
-        architecture: [ armhf, arm64, amd64]
-        distroVersion: [ bullseye, bookworm, trixie]
+        distroName: [debian]
+        distroVersion: [bullseye, bookworm, trixie]
+        architecture: [amd64, armhf, arm64]        
         include:
-          - runner: ubuntu-24.04
-            architecture: amd64
-            distro: archlinux
-            distroVersion: rolling
-            dockerSource: library/archlinux:base-devel
-            tool: buildArch
-
-          - runner: ubuntu-24.04
-            architecture: amd64
-            distro: fedora
-            distroVersion: 42
-            tool: buildFedora
-
-          - runner: ubuntu-24.04
-            architecture: amd64
-            distro: ubuntu
+          - distroName: ubuntu
             distroVersion: jammy
-            tool: buildDebian
-
-          - runner: ubuntu-24.04
             architecture: amd64
-            distro: ubuntu
+          - distroName: ubuntu
             distroVersion: noble
-            tool: buildDebian
-
-          - runner: ubuntu-24.04
             architecture: amd64
-            distro: ubuntu
+          - distroName: ubuntu
             distroVersion: plucky
-            tool: buildDebian
-                     
-          - runner: ubuntu-24.04
             architecture: amd64
-            distro: debian
-            tool: buildDebian             
-
-          - runner: ubuntu-24.04-arm
-            architecture: arm64
-            distro: debian
-            dockerSource: balenalib/raspberrypi3-64:{distroVersion}-build
-            tool: buildDebian
-
-          - runner: ubuntu-24.04-arm
-            architecture: armhf            
-            distro: debian
-            dockerSource: balenalib/raspberry-pi:{distroVersion}-build
-            tool: buildDebian
-
-          - runner: ubuntu-24.04-arm
-            architecture: arm64
-            distro: debian
-            distroVersion: trixie
-            dockerSource: arm64v8/debian:{distroVersion}-slim
-            tool: buildDebian
-
-          - runner: ubuntu-24.04-arm
-            architecture: armhf            
-            distro: debian
-            distroVersion: trixie
-            dockerSource: arm32v7/debian:{distroVersion}-slim
-            tool: buildDebian            
+          - distroName: fedora
+            distroVersion: 42
+            architecture: amd64
+          - distroName: archlinux
+            distroVersion: latest
+            architecture: amd64         
 
     steps:
       - name: Checkout
@@ -92,32 +47,43 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
      
       - name: Prepare docker source
-        env:
-          DOCKER_SOURCE_TEMPLATE: ${{ matrix.dockerSource }}
-          DISTRO: ${{ matrix.distro }}
-          DISTRO_VERSION: ${{ matrix.distroVersion }}
+        shell: bash
         run: |
-          if [ -n "$DOCKER_SOURCE_TEMPLATE" ]; then
-            FINAL_DOCKER_SOURCE=$(echo "$DOCKER_SOURCE_TEMPLATE" | sed "s/{distroVersion}/$DISTRO_VERSION/")
+          # DOCKER SOURCE
+          if [ "${{ matrix.architecture }}" = "arm64" ] && [ "${{ matrix.distroVersion }}" = "trixie" ]; then
+            echo "FINAL_DOCKER_SOURCE=arm64v8/debian:${{ matrix.distroVersion }}-slim" >> $GITHUB_ENV ## moderm Rpi OS (arm64) ##
+          elif [ "${{ matrix.architecture }}" = "armhf" ] && [ "${{ matrix.distroVersion }}" = "trixie" ]; then
+            echo "FINAL_DOCKER_SOURCE=arm32v7/debian:${{ matrix.distroVersion }}-slim" >> $GITHUB_ENV ## moderm Rpi OS (armhf) ##
+          elif [ "${{ matrix.architecture }}" = "arm64" ]; then
+            echo "FINAL_DOCKER_SOURCE=balenalib/raspberrypi3-64:${{ matrix.distroVersion }}" >> $GITHUB_ENV ## older Rpi OS (arm64) ##
+          elif [ "${{ matrix.architecture }}" = "armhf" ]; then
+            echo "FINAL_DOCKER_SOURCE=balenalib/raspberry-pi:${{ matrix.distroVersion }}" >> $GITHUB_ENV ## older Rpi OS (armhf) ##
           else
-            FINAL_DOCKER_SOURCE="$DISTRO:$DISTRO_VERSION"
+            echo "FINAL_DOCKER_SOURCE=${{ matrix.distroName }}:${{ matrix.distroVersion }}" >> $GITHUB_ENV ## DEFAULT ##
           fi
-          echo "FINAL_DOCKER_SOURCE=$FINAL_DOCKER_SOURCE" >> $GITHUB_ENV
+          # TOOLKIT
+          if [ "${{ matrix.distroName }}" = "fedora" ]; then
+            echo "DOCKER_TOOL=buildFedora" >> $GITHUB_ENV
+          elif [ "${{ matrix.distroName }}" = "archlinux" ]; then
+            echo "DOCKER_TOOL=buildArch" >> $GITHUB_ENV
+          else
+            echo "DOCKER_TOOL=buildDebian" >> $GITHUB_ENV
+          fi
 
       - name: Build & push docker container
         env:
-          HYPERHDR_DOCKER_TAG: ghcr.io/awawa-dev/${{ matrix.architecture }}/${{ matrix.distro }}:${{ matrix.distroVersion }}
+          HYPERHDR_DOCKER_TAG: ghcr.io/awawa-dev/${{ matrix.architecture }}/${{ matrix.distroName }}:${{ matrix.distroVersion }}
         run: |
           docker build \
           -t ${{ env.HYPERHDR_DOCKER_TAG }} \
           --platform linux/${{ matrix.architecture }} \
           --label maintainer="HyperHDR" \
-          --label org.opencontainers.image.title="${{ matrix.distro }} (${{ matrix.distroVersion }})" \
+          --label org.opencontainers.image.title="${{ matrix.distroName }} (${{ matrix.distroVersion }})" \
           --label org.opencontainers.image.description="HyperHDR build environment" \
           --label org.opencontainers.image.url="https://hyperhdr.eu" \
           --label org.opencontainers.image.source="${{ github.server_url }}/${{ github.repository }}" \
           --label org.opencontainers.image.vendor="HyperHDR" \
           --label org.opencontainers.image.licenses="MIT" \
           --build-arg DOCKER_SOURCE="${{ env.FINAL_DOCKER_SOURCE }}" \
-          -f ${{ matrix.tool }} .
+          -f ${{ env.DOCKER_TOOL }} .
           docker push ${{ env.HYPERHDR_DOCKER_TAG }}
