@@ -69,7 +69,7 @@ fi
 #              BUILD CCACHE                #
 ############################################
 
-ccache_version="4.11.3"
+ccache_version="4.12.1"
 
 mkdir ccache
 cd ccache
@@ -94,7 +94,7 @@ fi
 
 mkdir build
 cd build
-cmake -DHIREDIS_FROM_INTERNET=ON -DCMAKE_BUILD_TYPE=Release ..
+cmake -DHIREDIS_FROM_INTERNET=ON -DCMAKE_C_BYTE_ORDER=LITTLE_ENDIAN -DCMAKE_BUILD_TYPE=Release ..
 if [ "$?" -ne "0" ]; then
   echo "CMake config failed"
   exit 1
