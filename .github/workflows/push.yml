@@ -7,8 +7,6 @@ jobs:
   DevelopmentDockerBuilder:
     name: ${{ matrix.architecture }}/${{ matrix.distroName }}:${{ matrix.distroVersion }}
     runs-on: ${{ startsWith(matrix.architecture, 'arm') && 'ubuntu-24.04-arm' || 'ubuntu-24.04' }}
-    permissions:
-      packages: write
 
     strategy:
       matrix:
@@ -38,13 +36,6 @@ jobs:
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3.6.0
-
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
      
       - name: Prepare docker source
         shell: bash
@@ -86,4 +77,3 @@ jobs:
           --label org.opencontainers.image.licenses="MIT" \
           --build-arg DOCKER_SOURCE="${{ env.FINAL_DOCKER_SOURCE }}" \
           -f ${{ env.DOCKER_TOOL }} .
-          docker push ${{ env.HYPERHDR_DOCKER_TAG }}
