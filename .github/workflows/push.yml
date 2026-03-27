@@ -17,16 +17,13 @@ jobs:
         architecture: [amd64, armhf, arm64]        
         include:
           - distroName: ubuntu
-            distroVersion: jammy
-            architecture: amd64
-          - distroName: ubuntu
             distroVersion: noble
             architecture: amd64
           - distroName: ubuntu
-            distroVersion: questing
+            distroVersion: resolute
             architecture: amd64
           - distroName: fedora
-            distroVersion: 43
+            distroVersion: 44
             architecture: amd64
           - distroName: archlinux
             distroVersion: latest
@@ -86,4 +83,10 @@ jobs:
           --label org.opencontainers.image.licenses="MIT" \
           --build-arg DOCKER_SOURCE="${{ env.FINAL_DOCKER_SOURCE }}" \
           -f ${{ env.DOCKER_TOOL }} .
+
+      - name: Push docker container
+        if: github.ref == 'refs/heads/master'
+        env:
+          HYPERHDR_DOCKER_TAG: ghcr.io/awawa-dev/${{ matrix.architecture }}/${{ matrix.distroName }}:${{ matrix.distroVersion }}
+        run: |
           docker push ${{ env.HYPERHDR_DOCKER_TAG }}

@@ -69,7 +69,7 @@ fi
 #              BUILD CCACHE                #
 ############################################
 
-ccache_version="4.11.3"
+ccache_version="4.13.2"
 
 mkdir ccache
 cd ccache
