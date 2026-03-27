@@ -7,7 +7,7 @@ RUN apt-get update
 RUN bash -c 'if [[ "${DOCKER_SOURCE}" == arm64* ]] || [[ "${DOCKER_SOURCE}" == arm32* ]]; then \
         apt-get install -y --no-install-recommends curl gnupg ca-certificates && update-ca-certificates && \
         . /etc/os-release && \
-        curl -fsSL "https://archive.raspberrypi.org/debian/raspberrypi.gpg.key" | gpg --dearmor -o /usr/share/keyrings/raspberrypi-archive-keyring.gpg && \
+        curl -fsSL "https://github.com/raspberrypi/rpi-image-gen/raw/master/keydir/raspberrypi-archive-keyring.gpg" | gpg --dearmor -o /usr/share/keyrings/raspberrypi-archive-keyring.gpg && \
         echo "deb [signed-by=/usr/share/keyrings/raspberrypi-archive-keyring.gpg] http://archive.raspberrypi.org/debian/ ${VERSION_CODENAME} main" > /etc/apt/sources.list.d/raspberrypi.list && \
         echo "deb [signed-by=/usr/share/keyrings/raspberrypi-archive-keyring.gpg] http://archive.raspberrypi.org/debian-security ${VERSION_CODENAME}/security main" >> /etc/apt/sources.list.d/raspberrypi.list > /etc/apt/sources.list && \
         > /etc/apt/sources.list && \
