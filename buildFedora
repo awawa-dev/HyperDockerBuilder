@@ -32,8 +32,7 @@ RUN sudo dnf -y install \
     turbojpeg-devel \
     unzip \
     wget \
-    xz-devel \
-    xz
+    xz-devel
 
 RUN sudo dnf clean all
 
