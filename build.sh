@@ -7,6 +7,10 @@
 qt_version="6.8.4"
 qt_main="${qt_version%.*}"
 
+wget -O qtbase.tar.xz https://download.qt.io/official_releases/qt/${qt_main}/${qt_version}/submodules/qtbase-everywhere-opensource-src-${qt_version}.tar.xz
+file qtbase.tar.xz
+head -n 5 qtbase.tar.xz
+
 mkdir qt_lts && wget -qO- https://download.qt.io/official_releases/qt/${qt_main}/${qt_version}/submodules/qtbase-everywhere-opensource-src-${qt_version}.tar.xz | tar -xJ -C qt_lts --strip-components=1
 #git clone --branch v${qt_version}-lts-lgpl https://github.com/qt/qtbase.git qt_lts
 mkdir qt_build
