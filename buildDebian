@@ -8,7 +8,9 @@ RUN bash -c 'if [[ "${DOCKER_SOURCE}" == *bullseye* ]]; then \
         echo "deb http://archive.debian.org/debian bullseye main" > /etc/apt/sources.list; \
         echo "Acquire::Check-Valid-Until \"false\";" > /etc/apt/apt.conf.d/99no-check-valid-until; \
         echo "APT::Get::allow-downgrades \"true\";" > /etc/apt/apt.conf.d/99allow-downgrades; \
-        printf "Package: *\nPin: release a=bullseye\nPin-Priority: 1001\n" > /etc/apt/preferences.d/99downgrade; \
+        echo "Package: *" > /etc/apt/preferences.d/99downgrade; \
+        echo "Pin: origin archive.debian.org" >> /etc/apt/preferences.d/99downgrade; \
+        echo "Pin-Priority: 1001" >> /etc/apt/preferences.d/99downgrade; \
         apt-get update && apt-get dist-upgrade -y; \
     fi; \
     if [[ "${DOCKER_SOURCE}" == arm64* ]] || [[ "${DOCKER_SOURCE}" == arm32* ]]; then \
