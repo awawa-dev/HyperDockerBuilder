@@ -5,8 +5,10 @@
 ############################################
 
 qt_version="6.8.4"
+qt_main="${qt_version%.*}"
 
-git clone --branch v${qt_version}-lts-lgpl https://github.com/qt/qtbase.git qt_lts
+mkdir qt_lts && wget -qO- https://download.qt.io/official_releases/qt/${qt_main}/${qt_version}/submodules/qtbase-everywhere-opensource-src-${qt_version}.tar.xz | tar -xJ -C qt_lts --strip-components=1
+#git clone --branch v${qt_version}-lts-lgpl https://github.com/qt/qtbase.git qt_lts
 mkdir qt_build
 cd qt_build
 ../qt_lts/configure -prefix /usr -bindir /usr/qt_${qt_version}_bin -headerdir /usr/qt_${qt_version}_include -hostdatadir /usr/qt_${qt_version}_host -archdatadir /usr/qt_${qt_version} -datadir /usr/qt_${qt_version} -no-dbus -no-gui -no-widgets -no-icu -no-feature-sql -no-feature-xml -nomake tests -nomake examples
@@ -25,8 +27,8 @@ if [ "$?" -ne "0" ]; then
   exit 1
 fi
 
-rm -r * .*
-mkdir qtserialport && wget -qO- https://download.qt.io/official_releases/qt/6.8/6.8.4/submodules/qtserialport-everywhere-opensource-src-6.8.4.tar.xz | tar -xJ -C qtserialport --strip-components=1
+rm -rf * .[!.]* && ls -la
+mkdir qtserialport && wget -qO- https://download.qt.io/official_releases/qt/${qt_main}/${qt_version}/submodules/qtserialport-everywhere-opensource-src-${qt_version}.tar.xz | tar -xJ -C qtserialport --strip-components=1
 #git clone --branch v${qt_version}-lts-lgpl https://github.com/qt/qtserialport.git qtserialport
 cmake -G Ninja -DCMAKE_BUILD_TYPE=Release ${build_option_qt_serial} ./qtserialport
 if [ "$?" -ne "0" ]; then
