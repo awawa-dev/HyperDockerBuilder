@@ -12,7 +12,7 @@ RUN bash -c 'if [[ "${DOCKER_SOURCE}" == *bullseye* ]]; then \
         rm -f /etc/apt/preferences.d/99downgrade; \
     fi; \
     if [[ "${DOCKER_SOURCE}" == arm64* ]] || [[ "${DOCKER_SOURCE}" == arm32* ]]; then \
-        apt-get update && apt-get install -y --no-install-recommends curl gnupg ca-certificates && \
+        apt-get update && apt-get install -y --no-install-recommends --allow-downgrades curl gnupg ca-certificates && \
         update-ca-certificates && \
         . /etc/os-release && \
         curl -fsSL "https://archive.raspberrypi.com/debian/raspberrypi.gpg.key" | gpg --dearmor -o /usr/share/keyrings/raspberrypi-archive-keyring.gpg && \
