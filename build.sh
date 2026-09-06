@@ -7,7 +7,7 @@
 qt_version="6.8.4"
 qt_main="${qt_version%.*}"
 
-mkdir qt_lts && wget -qO- https://download.qt.io/official_releases/qt/${qt_main}/${qt_version}/submodules/qtbase-everywhere-opensource-src-${qt_version}.tar.xz | xz -dc | tar -x -C qt_lts --strip-components=1
+mkdir qt_lts && wget -qO- "https://download.qt.io/official_releases/qt/${qt_main}/${qt_version}/submodules/qtbase-everywhere-opensource-src-${qt_version}.zip" | tar -xf - -C qt_lts --strip-components=1
 #git clone --branch v${qt_version}-lts-lgpl https://github.com/qt/qtbase.git qt_lts
 mkdir qt_build
 cd qt_build
@@ -28,7 +28,7 @@ if [ "$?" -ne "0" ]; then
 fi
 
 rm -rf * .[!.]* && ls -la
-mkdir qtserialport && wget -qO- https://download.qt.io/official_releases/qt/${qt_main}/${qt_version}/submodules/qtserialport-everywhere-opensource-src-${qt_version}.tar.xz | xz -dc | tar -x -C qtserialport --strip-components=1
+mkdir qtserialport && wget -qO- "https://download.qt.io/official_releases/qt/${qt_main}/${qt_version}/submodules/qtserialport-everywhere-opensource-src-${qt_version}.zip" | tar -xf - -C qtserialport --strip-components=1
 #git clone --branch v${qt_version}-lts-lgpl https://github.com/qt/qtserialport.git qtserialport
 cmake -G Ninja -DCMAKE_BUILD_TYPE=Release ${build_option_qt_serial} ./qtserialport
 if [ "$?" -ne "0" ]; then
