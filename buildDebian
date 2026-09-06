@@ -4,8 +4,10 @@ FROM ${DOCKER_SOURCE}
 # install the packages required by HyperHDR
 ARG DOCKER_SOURCE
 RUN bash -c 'if [[ "${DOCKER_SOURCE}" == *bullseye* ]]; then \
-        sed -i "/debian-security/d" /etc/apt/sources.list || true; \
-        echo "Removing not existting debian-security source for Debian Bullseye"; \
+        echo "Swith Debian Bullseye (EOL) to archive..."; \
+        echo "deb http://archive.debian.org/debian bullseye main" > /etc/apt/sources.list; \
+        echo "deb http://archive.debian.org/debian-security bullseye-security main" >> /etc/apt/sources.list; \
+        echo "Acquire::Check-Valid-Until \"false\";" > /etc/apt/apt.conf.d/99no-check-valid-until; \
     fi; \
     if [[ "${DOCKER_SOURCE}" == arm64* ]] || [[ "${DOCKER_SOURCE}" == arm32* ]]; then \
         apt-get update && apt-get install -y --no-install-recommends curl gnupg ca-certificates && \
