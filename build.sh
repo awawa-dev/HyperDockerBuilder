@@ -19,7 +19,7 @@ fi
 git clone --branch v${qt_version}-lts-lgpl https://github.com/qt/qtbase.git qt_lts
 mkdir qt_build
 cd qt_build
-../qt_lts/configure -prefix /usr -bindir /usr/qt_${qt_version}_bin -headerdir /usr/qt_${qt_version}_include -hostdatadir /usr/qt_${qt_version}_host -archdatadir /usr/qt_${qt_version} -datadir /usr/qt_${qt_version} -submodules qtbase,qtnetwork ${build_option_qt} -no-dbus -no-gui -no-widgets -no-sql-sqlite -no-icu -skip qtsql -skip qtxml -nomake tests -nomake examples
+../qt_lts/configure -prefix /usr -bindir /usr/qt_${qt_version}_bin -headerdir /usr/qt_${qt_version}_include -hostdatadir /usr/qt_${qt_version}_host -archdatadir /usr/qt_${qt_version} -datadir /usr/qt_${qt_version} ${build_option_qt} -no-dbus -no-gui -no-widgets -no-sql-sqlite -no-icu -no-feature-sql -no-feature-xml -nomake tests -nomake examples
 if [ "$?" -ne "0" ]; then
   echo "Qt configuration failed"
   exit 1
