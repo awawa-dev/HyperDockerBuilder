@@ -4,9 +4,12 @@ FROM ${DOCKER_SOURCE}
 # install the packages required by HyperHDR
 ARG DOCKER_SOURCE
 RUN bash -c 'if [[ "${DOCKER_SOURCE}" == *bullseye* ]]; then \
-        echo "Swith Debian Bullseye (EOL) to archive..."; \
+        echo "Switch Debian Bullseye (EOL) to archive and force downgrade..."; \
         echo "deb http://archive.debian.org/debian bullseye main" > /etc/apt/sources.list; \
         echo "Acquire::Check-Valid-Until \"false\";" > /etc/apt/apt.conf.d/99no-check-valid-until; \
+        printf "Package: *\nPin: release a=bullseye\nPin-Priority: 1001\n" > /etc/apt/preferences.d/99downgrade; \
+        apt-get update && apt-get dist-upgrade -y --allow-downgrades; \
+        rm -f /etc/apt/preferences.d/99downgrade; \
     fi; \
     if [[ "${DOCKER_SOURCE}" == arm64* ]] || [[ "${DOCKER_SOURCE}" == arm32* ]]; then \
         apt-get update && apt-get install -y --no-install-recommends curl gnupg ca-certificates && \
