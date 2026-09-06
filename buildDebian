@@ -60,6 +60,13 @@ RUN apt-get install -y \
     unzip \
     wget
 
+RUN bash -c 'if [[ "${DOCKER_SOURCE}" == *bullseye* ]]; then \
+        echo "Updating cmake..."; \
+        apt-get remove -y cmake cmake-data; \
+        apt-get install -y python3-pip; \
+        pip3 install cmake --upgrade; \
+    fi;'
+
 RUN mkdir -p /scripts
 COPY build.sh /scripts
 WORKDIR /scripts
