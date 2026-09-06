@@ -6,7 +6,6 @@ ARG DOCKER_SOURCE
 RUN bash -c 'if [[ "${DOCKER_SOURCE}" == *bullseye* ]]; then \
         echo "Swith Debian Bullseye (EOL) to archive..."; \
         echo "deb http://archive.debian.org/debian bullseye main" > /etc/apt/sources.list; \
-        echo "deb http://archive.debian.org/debian-security bullseye-security main" >> /etc/apt/sources.list; \
         echo "Acquire::Check-Valid-Until \"false\";" > /etc/apt/apt.conf.d/99no-check-valid-until; \
     fi; \
     if [[ "${DOCKER_SOURCE}" == arm64* ]] || [[ "${DOCKER_SOURCE}" == arm32* ]]; then \
