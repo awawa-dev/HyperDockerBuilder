@@ -11,6 +11,7 @@ RUN bash -c ' \
         echo -e "Package: *\nPin: origin \"archive.debian.org\"\nPin-Priority: 1001" > /etc/apt/preferences.d/99downgrade; \
         apt-get update && apt-get dist-upgrade -y --allow-downgrades; \
     fi; \
+    \
     if [[ "${DOCKER_SOURCE}" == arm64* ]] || [[ "${DOCKER_SOURCE}" == arm32* ]]; then \
         apt-get update && apt-get install -y --no-install-recommends curl gnupg ca-certificates; \
         update-ca-certificates; \
@@ -25,10 +26,11 @@ RUN bash -c ' \
     else \
         apt-get update && (apt-get install -y libcec-dev libp8-platform-dev || true); \
         echo "Skipping Raspberry Pi OS repository, docker source is ${DOCKER_SOURCE}"; \
-    fi;'
-
-# install the packages required by HyperHDR
-RUN apt-get install -y \
+    fi; \
+    \
+    echo "Install the packages required by HyperHDR"; \
+    \
+    apt-get install -y \
     build-essential \
     cmake \
     flatbuffers-compiler \
@@ -56,9 +58,9 @@ RUN apt-get install -y \
     pkg-config \
     python3 \
     unzip \
-    wget
-
-RUN bash -c 'if [[ "${DOCKER_SOURCE}" == *bullseye* ]]; then \
+    wget; \
+    \
+    if [[ "${DOCKER_SOURCE}" == *bullseye* ]]; then \
         echo "Updating cmake..."; \
         apt-get remove -y cmake cmake-data; \
         apt-get install -y python3-pip; \
