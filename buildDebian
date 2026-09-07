@@ -3,7 +3,7 @@ FROM ${DOCKER_SOURCE}
 
 # install the packages required by HyperHDR
 ARG DOCKER_SOURCE
-RUN bash -c '
+RUN bash -c ' \
     if [[ "${DOCKER_SOURCE}" == *bullseye* ]]; then \
         echo "Switch Debian Bullseye (EOL) to archive and synchronize..."; \
         echo "deb http://archive.debian.org/debian bullseye main" > /etc/apt/sources.list; \
@@ -25,7 +25,7 @@ RUN bash -c '
     else \
         apt-get update && (apt-get install -y libcec-dev libp8-platform-dev || true); \
         echo "Skipping Raspberry Pi OS repository, docker source is ${DOCKER_SOURCE}"; \
-    fi'
+    fi;'
 
 # install the packages required by HyperHDR
 RUN apt-get install -y \
