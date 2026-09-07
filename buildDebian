@@ -21,6 +21,7 @@ RUN bash -c ' \
         apt-get update; \
         (apt-get install -y --no-install-recommends libcec-dev libp8-platform-dev raspi-utils-dt raspi-utils-core libdtovl0 libdrm-dev || true); \
         (apt-get install -y --no-install-recommends mesa-vulkan-drivers || true); \
+        (apt-get install -y --no-install-recommends libraspberrypi-bin libraspberrypi-dev || true); \
     else \
         apt-get update && (apt-get install -y libcec-dev libp8-platform-dev || true); \
         echo "Skipping Raspberry Pi OS repository, docker source is ${DOCKER_SOURCE}"; \
