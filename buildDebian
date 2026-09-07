@@ -9,25 +9,29 @@ RUN bash -c ' \
         echo "deb http://archive.debian.org/debian bullseye main" > /etc/apt/sources.list; \
         echo "Acquire::Check-Valid-Until \"false\";" > /etc/apt/apt.conf.d/99no-check-valid-until; \
         echo -e "Package: *\nPin: origin \"archive.debian.org\"\nPin-Priority: 1001" > /etc/apt/preferences.d/99downgrade; \
+        echo -e "Package: *\nPin: origin \"archive.raspberrypi.com\"\nPin-Priority: 1002" > /etc/apt/preferences.d/99rpi; \
         apt-get update && apt-get dist-upgrade -y --allow-downgrades; \
+    else \
+        apt-get update; \
     fi; \
     \
     if [[ "${DOCKER_SOURCE}" == arm64* ]] || [[ "${DOCKER_SOURCE}" == arm32* ]]; then \
-        apt-get update && apt-get install -y --no-install-recommends curl gnupg ca-certificates; \
+        apt-get install -y --no-install-recommends curl gnupg ca-certificates; \
         update-ca-certificates; \
         . /etc/os-release; \
         curl -fsSL "https://github.com/raspberrypi/rpi-image-gen/raw/master/keydir/raspberrypi-archive-keyring.gpg" | gpg --dearmor -o /usr/share/keyrings/raspberrypi-archive-keyring.gpg; \
         echo "deb [signed-by=/usr/share/keyrings/raspberrypi-archive-keyring.gpg] http://archive.raspberrypi.com/debian/ ${VERSION_CODENAME} main" > /etc/apt/sources.list.d/raspberrypi.list; \
         apt-get update; \
-        (apt-get install -y --no-install-recommends libcec-dev libp8-platform-dev raspi-utils-dt raspi-utils-core libdtovl0 libdrm-dev || true); \
+        (apt-get install -y --no-install-recommends raspi-utils-dt raspi-utils-core libdtovl0 || true); \
         (apt-get install -y --no-install-recommends mesa-vulkan-drivers || true); \
         (apt-get install -y --no-install-recommends libraspberrypi-bin libraspberrypi-dev || true); \
     else \
-        apt-get update && (apt-get install -y libcec-dev libp8-platform-dev || true); \
         echo "Skipping Raspberry Pi OS repository, docker source is ${DOCKER_SOURCE}"; \
     fi; \
     \
     echo "Install the packages required by HyperHDR"; \
+    \
+    apt-get install -y libcec-dev libp8-platform-dev libdrm-dev || true; \
     \
     apt-get install -y \
     build-essential \
