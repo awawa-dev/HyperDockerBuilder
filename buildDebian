@@ -24,7 +24,9 @@ RUN bash -c ' \
         apt-get update; \
         (apt-get install -y --no-install-recommends raspi-utils-dt raspi-utils-core libdtovl0 || true); \
         (apt-get install -y --no-install-recommends mesa-vulkan-drivers || true); \
-        (apt-get install -y --no-install-recommends libraspberrypi-bin libraspberrypi-dev || true); \
+        if [[ "${DOCKER_SOURCE}" == *bullseye* ]]; then \
+            (apt-get install -y --no-install-recommends libraspberrypi-bin libraspberrypi-dev || true); \
+        fi; \        
     else \
         echo "Skipping Raspberry Pi OS repository, docker source is ${DOCKER_SOURCE}"; \
     fi; \
