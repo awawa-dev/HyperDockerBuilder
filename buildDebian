@@ -9,7 +9,6 @@ RUN bash -c ' \
         echo "deb http://archive.debian.org/debian bullseye main" > /etc/apt/sources.list; \
         echo "Acquire::Check-Valid-Until \"false\";" > /etc/apt/apt.conf.d/99no-check-valid-until; \
         echo -e "Package: *\nPin: origin \"archive.debian.org\"\nPin-Priority: 1001" > /etc/apt/preferences.d/99downgrade; \
-        echo -e "Package: *\nPin: origin \"archive.raspberrypi.com\"\nPin-Priority: 1002" > /etc/apt/preferences.d/99rpi; \
         apt-get update && apt-get dist-upgrade -y --allow-downgrades; \
     else \
         apt-get update; \
