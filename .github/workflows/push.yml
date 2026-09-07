@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         distroName: [debian]
-        distroVersion: [bullseye, bookworm, trixie]
+        distroVersion: [bullseye, bookworm, trixie, forky]
         architecture: [amd64, armhf, arm64]        
         include:
           - distroName: ubuntu
@@ -31,13 +31,13 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v6.0.2
+        uses: actions/checkout@v7.0.1
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3.7.0
+        uses: docker/setup-qemu-action@v4.3.0
 
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4.6.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -47,14 +47,10 @@ jobs:
         shell: bash
         run: |
           # DOCKER SOURCE
-          if [ "${{ matrix.architecture }}" = "arm64" ] && [ "${{ matrix.distroVersion }}" = "trixie" ]; then
+          if [ "${{ matrix.architecture }}" = "arm64" ]; then
             echo "FINAL_DOCKER_SOURCE=arm64v8/debian:${{ matrix.distroVersion }}-slim" >> $GITHUB_ENV ## moderm Rpi OS (arm64) ##
-          elif [ "${{ matrix.architecture }}" = "armhf" ] && [ "${{ matrix.distroVersion }}" = "trixie" ]; then
-            echo "FINAL_DOCKER_SOURCE=arm32v7/debian:${{ matrix.distroVersion }}-slim" >> $GITHUB_ENV ## moderm Rpi OS (armhf) ##
-          elif [ "${{ matrix.architecture }}" = "arm64" ]; then
-            echo "FINAL_DOCKER_SOURCE=balenalib/raspberrypi3-64:${{ matrix.distroVersion }}" >> $GITHUB_ENV ## older Rpi OS (arm64) ##
           elif [ "${{ matrix.architecture }}" = "armhf" ]; then
-            echo "FINAL_DOCKER_SOURCE=balenalib/raspberry-pi:${{ matrix.distroVersion }}" >> $GITHUB_ENV ## older Rpi OS (armhf) ##
+            echo "FINAL_DOCKER_SOURCE=arm32v7/debian:${{ matrix.distroVersion }}-slim" >> $GITHUB_ENV ## moderm Rpi OS (armhf) ##
           else
             echo "FINAL_DOCKER_SOURCE=${{ matrix.distroName }}:${{ matrix.distroVersion }}" >> $GITHUB_ENV ## DEFAULT ##
           fi
