@@ -12,6 +12,7 @@ RUN pacman -S --noconfirm --needed \
     binutils \
     chrpath \
     cmake \
+    dbus \
     dpkg \
     fakeroot \
     flatbuffers \
