@@ -41,6 +41,11 @@ configure_args=(
     -no-feature-hijricalendar
     -no-feature-timezone_locale
     -no-feature-mimetype
+    -no-feature-testlib
+    -no-feature-concurrent
+    -no-feature-future
+    -no-feature-itemmodel
+    -no-feature-filesystemwatcher
 
     -nomake tests
     -nomake examples
