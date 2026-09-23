@@ -9,7 +9,49 @@ qt_version="6.8.4"
 git clone --depth 1 --branch v${qt_version}-lts-lgpl https://code.qt.io/qt/qtbase.git qt_lts
 mkdir qt_build
 cd qt_build
-../qt_lts/configure -prefix /usr -bindir /usr/qt_${qt_version}_bin -headerdir /usr/qt_${qt_version}_include -hostdatadir /usr/qt_${qt_version}_host -archdatadir /usr/qt_${qt_version} -datadir /usr/qt_${qt_version} -no-dbus -no-gui -no-widgets -no-icu -no-feature-sql -no-feature-xml -nomake tests -nomake examples
+
+configure_args=(
+    -prefix /usr
+    -bindir /usr/qt_${qt_version}_bin
+    -headerdir /usr/qt_${qt_version}_include
+    -hostdatadir /usr/qt_${qt_version}_host
+    -archdatadir /usr/qt_${qt_version}
+    -datadir /usr/qt_${qt_version}
+
+    # Existing
+    -no-dbus
+    -no-gui
+    -no-widgets
+    -no-icu
+    -no-feature-sql
+    -no-feature-xml
+
+    # QtNetwork
+    -no-feature-brotli
+    -no-feature-networkdiskcache
+    -no-feature-gssapi
+    -no-feature-ocsp
+    -no-feature-networkproxy
+    -no-feature-topleveldomain
+
+    # QtCore
+    -no-feature-animation
+    -no-feature-easingcurve
+    -no-feature-jalalicalendar
+    -no-feature-hijricalendar
+    -no-feature-timezone_locale
+    -no-feature-mimetype
+
+    -nomake tests
+    -nomake examples
+)
+
+../qt_lts/configure "${configure_args[@]}"
+
+echo "===== Qt feature configuration ====="
+grep '^QT_FEATURE_' CMakeCache.txt | sort
+echo "===================================="
+
 if [ "$?" -ne "0" ]; then
   echo "Qt configuration failed"
   exit 1
