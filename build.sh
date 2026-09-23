@@ -46,8 +46,6 @@ configure_args=(
     -no-feature-future
     -no-feature-itemmodel
     -no-feature-filesystemwatcher
-    -no-feature-cborstreamreader
-    -no-feature-cborstreamwriter
 
     -nomake tests
     -nomake examples
