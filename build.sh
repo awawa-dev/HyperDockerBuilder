@@ -46,6 +46,8 @@ configure_args=(
     -no-feature-future
     -no-feature-itemmodel
     -no-feature-filesystemwatcher
+    -no-feature-cborstreamreader
+    -no-feature-cborstreamwriter
 
     -nomake tests
     -nomake examples
@@ -62,6 +64,14 @@ if [ "$?" -ne "0" ]; then
   exit 1
 fi
 cmake --build . --parallel
+
+echo "===== Qt module sizes (build) ====="
+find . -type f \( -name 'libQt6Core.so*' -o -name 'libQt6Network.so*' \) \
+    -printf '%s %p\n' |
+    sort -n |
+    numfmt --field=1 --to=iec
+echo "==================================="
+
 if [ "$?" -ne "0" ]; then
   echo "Qt build failed"
   exit 1
