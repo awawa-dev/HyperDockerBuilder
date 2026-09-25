@@ -18,13 +18,10 @@ RUN pacman -S --noconfirm --needed \
     flatbuffers \
     freetds \
     git \
-    gtk3 \
-    libayatana-appindicator \
     libfbclient \
     libftdi \
     libglvnd \
     libjpeg-turbo \
-    libx11 \
     lld \    
     mariadb-libs \
     mesa \
@@ -34,8 +31,6 @@ RUN pacman -S --noconfirm --needed \
     pkgfile \
     postgresql-libs \
     python \
-    sdbus-cpp \
-    systemd-libs \
     unzip \
     wayland \
     wget \

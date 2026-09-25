@@ -15,9 +15,6 @@ RUN sudo dnf -y install \
     gcc \
     gcc-c++ \
     git \
-    gtk3-devel \
-    libX11-devel \
-    libayatana-appindicator-gtk3-devel \
     libftdi-c++-devel \
     libglvnd-devel \
     libusb1-devel \
@@ -29,7 +26,6 @@ RUN sudo dnf -y install \
     openssl-devel \
     pipewire-devel \
     pkg-config \
-    systemd-devel \
     turbojpeg-devel \
     unzip \
     wget \
